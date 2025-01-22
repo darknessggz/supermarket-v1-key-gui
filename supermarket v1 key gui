@@ -110,7 +110,7 @@ fetchCorrectKey()
 -- Add functionality to the "Get Key" button
 getKeyButton.MouseButton1Click:Connect(function()
     -- Copy the link to the clipboard
-    setclipboard("https://link-target.net/1151979/key-system-mysupermarket") -- Replace with your intended URL
+    setclipboard("https://link-center.net/1151979/my-supermarket-restock-v2") -- Replace with your intended URL
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "Copied!",
         Text = "Link copied to clipboard , paste in your browser to get key!",
