@@ -41,7 +41,7 @@ end)
 
 -- Add a heading
 local heading = Instance.new("TextLabel")
-heading.Text = "Key System - My Supermarket v2"
+heading.Text = "Key System - My Supermarket v1"
 heading.Size = UDim2.new(1, 0, 0, 50)
 heading.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
 heading.TextColor3 = Color3.new(1, 1, 1)
