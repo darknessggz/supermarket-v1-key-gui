@@ -1,0 +1,148 @@
+-- Create the ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+screenGui.ResetOnSpawn = false -- Prevent GUI reset when respawning
+
+-- Create the main Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 200)
+frame.Position = UDim2.new(0.5, -150, 0.5, -100)
+frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+frame.Parent = screenGui
+
+-- Enable dragging
+local dragToggle = false
+local dragStart, startPos
+local UIS = game:GetService("UserInputService")
+
+local function update(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragToggle = true
+        dragStart = input.Position
+        startPos = frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragToggle = false
+            end
+        end)
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if dragToggle and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        update(input)
+    end
+end)
+
+-- Add a heading
+local heading = Instance.new("TextLabel")
+heading.Text = "Key System - My Supermarket v2"
+heading.Size = UDim2.new(1, 0, 0, 50)
+heading.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+heading.TextColor3 = Color3.new(1, 1, 1)
+heading.Font = Enum.Font.SourceSans
+heading.TextSize = 24
+heading.Parent = frame
+
+-- Create the TextBox for entering the key
+local textBox = Instance.new("TextBox")
+textBox.PlaceholderText = "Enter key"
+textBox.Size = UDim2.new(0.8, 0, 0, 40)
+textBox.Position = UDim2.new(0.1, 0, 0.4, -20)
+textBox.BackgroundColor3 = Color3.new(1, 1, 1)
+textBox.Font = Enum.Font.SourceSans
+textBox.TextSize = 18
+textBox.Text = ""
+textBox.TextColor3 = Color3.new(0, 0, 0)
+textBox.Parent = frame
+
+-- Create the "Get Key" button
+local getKeyButton = Instance.new("TextButton")
+getKeyButton.Text = "Get Key"
+getKeyButton.Size = UDim2.new(0.4, -10, 0, 40)
+getKeyButton.Position = UDim2.new(0.05, 0, 0.7, 0)
+getKeyButton.BackgroundColor3 = Color3.new(0.3, 0.6, 0.3)
+getKeyButton.TextColor3 = Color3.new(1, 1, 1)
+getKeyButton.Font = Enum.Font.SourceSans
+getKeyButton.TextSize = 18
+getKeyButton.Parent = frame
+
+-- Create the "Check Key" button
+local checkKeyButton = Instance.new("TextButton")
+checkKeyButton.Text = "Check Key"
+checkKeyButton.Size = UDim2.new(0.4, -10, 0, 40)
+checkKeyButton.Position = UDim2.new(0.55, 0, 0.7, 0)
+checkKeyButton.BackgroundColor3 = Color3.new(0.6, 0.3, 0.3)
+checkKeyButton.TextColor3 = Color3.new(1, 1, 1)
+checkKeyButton.Font = Enum.Font.SourceSans
+checkKeyButton.TextSize = 18
+checkKeyButton.Parent = frame
+
+-- Define the loadstring URL
+local keySystemUrl = "https://s3.eu-central-1.amazonaws.com/adlocis.linkvertise.links/pastes/282927488.txt?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6L5L3NKTBHJ3YVHU%2F20250122%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20250122T101509Z&X-Amz-SignedHeaders=host&X-Amz-Expires=432000&X-Amz-Signature=1e7e76b5fb30b74ac328acbe073583535a3f47b296d2b6cc6522ce622d9177e9"
+local correctKey = nil
+
+-- Fetch the correct key from the loadstring
+local function fetchCorrectKey()
+    local success, result = pcall(function()
+        -- Fetch the content from the URL and print it for debugging
+        local urlContent = game:HttpGet(keySystemUrl)
+     --   print("Fetched URL Content: " .. urlContent)  -- Debugging the content
+        return urlContent  -- Return the content to see what the key is
+    end)
+    
+    if success then
+        correctKey = result
+   --     print("Fetched Key: " .. tostring(correctKey))  -- Print the fetched content (key)
+    else
+        warn("Failed to fetch the key: " .. tostring(result))
+    end
+end
+
+-- Fetch and print the key when the script runs
+fetchCorrectKey()
+
+-- Add functionality to the "Get Key" button
+getKeyButton.MouseButton1Click:Connect(function()
+    -- Copy the link to the clipboard
+    setclipboard("https://link-target.net/1151979/key-system-mysupermarket") -- Replace with your intended URL
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Copied!",
+        Text = "Link copied to clipboard , paste in your browser to get key!",
+        Duration = 5
+    })
+end)
+
+-- Add functionality to the "Check Key" button
+checkKeyButton.MouseButton1Click:Connect(function()
+    -- Debugging user input
+    print("Entered Key: " .. tostring(textBox.Text))
+    
+    if correctKey and textBox.Text == correctKey then
+        -- Shrink the GUI
+        for scale = 1, 0, -0.1 do
+            frame.Size = UDim2.new(0, 300 * scale, 0, 200 * scale)
+            frame.Position = UDim2.new(0.5, -150 * scale, 0.5, -100 * scale)
+            wait(0.05)
+        end
+
+        -- Destroy the GUI
+        frame:Destroy()
+
+        -- Load the external script
+loadstring(game:HttpGet("https://raw.githubusercontent.com/darknessggz/Key-System---My-supermarket-/refs/heads/main/final%20gui%20v1%20appear", true))()
+
+
+    else
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Error",
+            Text = "Incorrect Key!",
+            Duration = 3
+        })
+    end
+end)
